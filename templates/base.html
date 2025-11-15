@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+    .container{
+        background-color: lemonchiffon;
+    }
+    .navbar-nav{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+    }
+    ul li{
+        list-style: none;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .3s ease-in-out;
+        color: rgb(115, 115, 115);
+    }
+    ul li:hover{
+        color: rgb(62, 62, 255);
+    }
+</style>
+    <title> SokoHub </title>
+</head>
+<body>
+   <nav class="navbar navbar-default navbar-expand-lg navbar-light bg-light px-3">
+    <a href="" class="navbar-brand">SokoHub</a>
+    <button class="navbar-toggler">
+        <span class="navbar-toggler-icon">
+
+        </span>
+    </button>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+            <li class="nav-item">Home</li>
+            <li class="nav-item">Products</li>
+            <li class="nav-item">Login</li>
+            <li class="nav-item">Register</li>
+        </ul>
+    </div>
+   </nav>
+
+   {% block content %}
+   
+   {% endblock %}
+</body>
+</html>

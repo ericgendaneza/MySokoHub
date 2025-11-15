@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
 # Create your views here.
 
 def welcome(request):
-    return HttpResponse('<h1>Welcome to SokoHub!</h1>')
+    return render(request, 'base.html')
 def login(request):
-    return HttpResponse('<h1>This is login Page</h1>')
+    return render(request,'login.html')
