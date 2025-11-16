@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Latest compiled and minified CSS -->
+     <title>
+        {% block title %}
+        SokoHub
+        {% endblock %}
+     </title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <style>
     .container{
@@ -26,8 +31,26 @@
     ul li:hover{
         color: rgb(62, 62, 255);
     }
+    .login-container {
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 100px;
+            padding-bottom: 100px;
+        }
+
+    /* Custom style to center the container and provide padding */
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 0;
+            background-color: #f8f9fa;
+        }
+
 </style>
-    <title> SokoHub </title>
 </head>
 <body>
    <nav class="navbar navbar-default navbar-expand-lg navbar-light bg-light px-3">
@@ -41,8 +64,8 @@
         <ul class="navbar-nav">
             <li class="nav-item">Home</li>
             <li class="nav-item">Products</li>
-            <li class="nav-item">Login</li>
-            <li class="nav-item">Register</li>
+            <li class="nav-item"><a href="{% url 'login' %}">Login</a> </li>
+            <li class="nav-item"><a href="{% url 'register' %}">Register</a> </li>
         </ul>
     </div>
    </nav>
