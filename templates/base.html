@@ -1,37 +1,54 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Latest compiled and minified CSS -->
-     <title>
+    
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+        crossorigin="anonymous"
+    >
+
+    <title>
         {% block title %}
         SokoHub
         {% endblock %}
-     </title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<style>
-    .container{
-        background-color: lemonchiffon;
-    }
-    .navbar-nav{
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-
-    }
-    ul li{
-        list-style: none;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all .3s ease-in-out;
-        color: rgb(115, 115, 115);
-    }
-    ul li:hover{
-        color: rgb(62, 62, 255);
-    }
-    .login-container {
+    </title>
+    
+    <style>
+        /* This style uses old Bootstrap 3 spacing conventions. Consider updating to Bootstrap 5 utilities (like p-3, m-4, etc.) */
+        .container {
+            background-color: lemonchiffon; /* Warning: This will apply to ALL .container elements */
+        }
+        
+        /* Custom list styling is generally unnecessary when using Bootstrap's nav-item/nav-link */
+        .navbar-nav {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        
+        /* You should target the anchor tag (a) inside the li for color/hover effects */
+        ul li {
+            list-style: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s ease-in-out;
+        }
+        ul li a {
+            color: rgb(115, 115, 115); /* Apply default color to link text */
+            text-decoration: none; /* Remove underline from links */
+        }
+        ul li a:hover {
+            color: rgb(62, 62, 255);
+        }
+        
+        /* Other custom styles remain as provided */
+        .login-container {
             height: auto;
             display: flex;
             align-items: center;
@@ -39,8 +56,6 @@
             padding-top: 100px;
             padding-bottom: 100px;
         }
-
-    /* Custom style to center the container and provide padding */
         .register-container {
             min-height: 100vh;
             display: flex;
@@ -49,43 +64,54 @@
             padding: 30px 0;
             background-color: #f8f9fa;
         }
-
-</style>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {% load static %}
-
-    <!-- Bootstrap CSS (this is the link you meant) -->
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-        rel="stylesheet"
-    >
-
-    <title>SokoHub</title>
-
+    </style>
 </head>
 <body>
-   <nav class="navbar navbar-default navbar-expand-lg navbar-light bg-light px-3">
-    <a href="" class="navbar-brand">SokoHub</a>
-    <button class="navbar-toggler">
-        <span class="navbar-toggler-icon">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container-fluid px-3">
+            <a href="{% url 'home_page' %}" class="navbar-brand fw-bold text-primary">SokoHub</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home_page' %}">Home</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">Products</a>
+                    </li>
+                    
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-        </span>
-    </button>
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav">
-            <li class="nav-item">Home</li>
-            <li class="nav-item">Products</li>
-            <li class="nav-item"><a href="{% url 'login' %}">Login</a> </li>
-            <li class="nav-item"><a href="{% url 'register' %}">Register</a> </li>
-        </ul>
-    </div>
-   </nav>
+    <main class="container">
+        {% block content %}
+        
+        {% endblock content %}
+    </main>
 
-   {% block content %}
-   
-   {% endblock %}
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+        crossorigin="anonymous">
+    </script>
 </body>
 </html>

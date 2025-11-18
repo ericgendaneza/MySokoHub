@@ -6,9 +6,10 @@ from accounts.models import CustomUser
 class Product(models.Model):
     vendor = models.ForeignKey(CustomUser, on_delete=models.CASCADE) #you will have to change it to CASCADE for testing purposes
     description = models.TextField()
-    price = models.IntegerField()
+    name = models.CharField(max_length=200)
+    price = models.DecimalField(decimal_places=3, max_digits=5)
     stock = models.IntegerField()
-    image = models.ImageField()
+    image = models.ImageField(null=True)
     status = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 

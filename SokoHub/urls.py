@@ -20,14 +20,10 @@ from .views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('accounts.urls')),
-    path('products/', include('products.urls')),
+    path('', include('products.urls')),
+    path('accounts/', include('accounts.urls')),
     path('orders/', include('orders.urls')),
-<<<<<<< HEAD
-    
-=======
     path('',home,name='home'),
     path('products/',include('products.urls'))
->>>>>>> d836374e5d68b8222bb75c2e84ee4a89dbf60bb2
 ]
 
