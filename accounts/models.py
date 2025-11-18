@@ -8,6 +8,6 @@ class CustomUser(AbstractUser):
     phone = models.TextField()
     location = models.TextField()
     def __str__(self):
-        return(f"user_typ:{self.user_type}\nemail:{self.email}\nphone:{self.email}\nlocation:{self.location}")
+        return(f"user_typ:{self.user_type}\nemail:{self.email}\nphone:{self.phone}\nlocation:{self.location}")
 
 
