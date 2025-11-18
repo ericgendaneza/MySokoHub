@@ -11,20 +11,26 @@ def home(request):
 
 def add_product(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.vendor = request.user
-            product.status = 'active'
-            product.save()
-            messages.success(request, 'Product added successfully!')
-            return redirect('vendor_dashboard')
-    else:
-        form = ProductForm()
-    return render(request, 'products/add_product.html', {'form': form})
+       product_name=request.POST.get('name')
+       product_price=request.POST.get('price')
+       product_description=request.POST.get('description')
+       product_image=request.POST.get('image')
+       product_stock=request.POST.get('stock')
 
-
-
+       product=Product.objects.create( 
+        name=product_name,
+        price=product_price,
+        description=product_description,
+        image=product_image,
+        stock=product_stock,
+        vendor=request.user
+       )
+       product.save()
+       messages.success(request, 'Product added successfully')
+       return redirect('home')
+    return render(request, 'products/add_product.html')
+    
+    
 
 
 

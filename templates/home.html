@@ -1,7 +1,14 @@
-{% extends 'base.html' %}
+{% comment %} {% extends 'base.html' %} {% endcomment %}
 {% load static %}
 
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+            {{ message }}
+</div>
+    {% endfor %}
+{% endif %}
 
 <!-- HERO SECTION -->
 <div class="bg-primary text-white p-5 text-center">
@@ -53,5 +60,6 @@
         {% endif %}
     </div>
 </div>
+
 
 {% endblock %}
