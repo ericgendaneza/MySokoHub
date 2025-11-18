@@ -17,6 +17,6 @@ class CustomUser(AbstractUser):
     location = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return f"{self.username} ({self.get_user_type_display()})"
+        return(f"user_typ:{self.user_type}\nemail:{self.email}\nphone:{self.email}\nlocation:{self.location}")
 
 
