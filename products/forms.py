@@ -6,7 +6,11 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'description', 'price', 'stock', 'image']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Product name'}),
+            'description': forms.Textarea(attrs={'rows': 4, 'class': 'form-control', 'placeholder': 'Short description'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00', 'step': '0.01'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
     def clean_price(self):

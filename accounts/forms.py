@@ -5,14 +5,21 @@ from django import forms
 USER_TYPE_CHOICES = (
     ('customer', 'Customer'),
     ('vendor', 'Vendor/Seller'),
-    ('admin', 'Administrator'),
 )
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=150)
-    email = forms.EmailField(max_length=254)
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_confirm = forms.CharField(widget=forms.PasswordInput) 
+    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={
+        'class': 'form-control', 'placeholder': 'username'
+    }))
+    email = forms.EmailField(max_length=254, widget=forms.EmailInput(attrs={
+        'class': 'form-control', 'placeholder': 'you@example.com'
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Password'
+    }))
+    password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Confirm Password'
+    })) 
     
     user_type = forms.ChoiceField(
         choices=USER_TYPE_CHOICES,
@@ -33,3 +40,21 @@ class RegistrationForm(forms.Form):
                 "Password and Confirm Password fields do not match."
             )
         return cleaned_data
+
+
+class LoginForm(forms.Form):
+    email = forms.CharField(
+        max_length=254,
+        label='Email or Username',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'you@example.com'
+        })
+    )
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Password'
+        })
+    )

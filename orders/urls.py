@@ -11,4 +11,6 @@ urlpatterns = [
     path('vendor-orders/', views.vendor_orders, name='vendor_orders'),
     path('vendor-orders/<int:order_id>/', views.vendor_order_details, name='vendor_order_details'),
 
+    # (Session cart removed — using simple single-product checkout flow)
+
 ]

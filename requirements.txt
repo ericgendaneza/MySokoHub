@@ -1,0 +1,8 @@
+Django==5.2.8
+Pillow==12.0.0
+# Optional UI helpers used by templates
+django-crispy-forms>=2.0
+crispy-bootstrap5>=0.7
+
+# If you intend to use PostgreSQL in future:
+# psycopg2-binary>=2.9

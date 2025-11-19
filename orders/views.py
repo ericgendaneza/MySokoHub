@@ -5,6 +5,8 @@ from django.contrib import messages
 from .forms import CheckoutForm
 from .models import Order, OrderItem
 from products.models import Product
+from django.http import JsonResponse
+from django.shortcuts import reverse
 
 @login_required
 def checkout(request, product_id):
@@ -18,7 +20,7 @@ def checkout(request, product_id):
     # Prevent checkout if product out of stock
     if product.stock <= 0:
         messages.error(request, "This product is out of stock.")
-        return redirect('products:product_detail', product_id=product.id)  # adjust as needed
+        return redirect('products:product_detail', pk=product.id)  # adjust as needed
 
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
@@ -62,7 +64,20 @@ def checkout(request, product_id):
         }
         form = CheckoutForm(initial=initial)
 
-    total_preview = product.price * (form.initial.get('quantity', 1) if not form.is_bound else form.cleaned_data.get('quantity', 1) if form.is_valid() else form.data.get('quantity', 1))
+    # Safely determine quantity for preview (ensure it's an int)
+    if form.is_bound:
+        if form.is_valid():
+            preview_qty = form.cleaned_data.get('quantity', 1)
+        else:
+            # form.data values come from POST and are strings; coerce to int safely
+            try:
+                preview_qty = int(form.data.get('quantity', 1))
+            except (TypeError, ValueError):
+                preview_qty = int(form.initial.get('quantity', 1))
+    else:
+        preview_qty = int(form.initial.get('quantity', 1))
+
+    total_preview = product.price * preview_qty
     # Render template
     return render(request, 'checkout.html', {
         'product': product,
@@ -74,7 +89,29 @@ def checkout(request, product_id):
 @login_required
 def confirmation(request, order_id):
     # Show order details after placing order
-    order = get_object_or_404(Order, id=order_id, customer=request.user)
+    # Allow the customer who placed the order to view it.
+    # Also allow vendors to view the confirmation if the order contains items
+    # that belong to them, and allow staff/superuser to view any order.
+    order = Order.objects.filter(id=order_id).first()
+    if not order:
+        messages.error(request, "Order not found.")
+        return redirect('products:product_list')
+
+    user_is_customer = (order.customer == request.user)
+    user_is_staff = getattr(request.user, 'is_staff', False) or getattr(request.user, 'is_superuser', False)
+    user_is_vendor = getattr(request.user, 'user_type', None) == 'vendor'
+
+    vendor_has_item = False
+    if user_is_vendor:
+        vendor_has_item = OrderItem.objects.filter(order=order, product__vendor=request.user).exists()
+
+    if not (user_is_customer or user_is_staff or vendor_has_item):
+        messages.error(request, "Order not found or you don't have permission to view it.")
+        # redirect vendors to their orders list, customers to their orders
+        if user_is_vendor:
+            return redirect('orders:vendor_orders')
+        return redirect('orders:my_orders')
+
     items = OrderItem.objects.filter(order=order)
     return render(request, 'confirmation.html', {'order': order, 'items': items})
 
@@ -119,6 +156,7 @@ def vendor_order_details(request, order_id):
         "order": order,
         "items": items
     })
+    
 
 
 

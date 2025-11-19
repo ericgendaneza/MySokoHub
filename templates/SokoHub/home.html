@@ -8,10 +8,10 @@
     <h1 class="display-4 fw-bold">Welcome to SokoHub</h1>
     <p class="lead">Your marketplace for local vendors and amazing products</p>
 
-    <a href="{% url 'product_list' %}" class="btn btn-light btn-lg mt-3">
+    <a href="{% url 'products:product_list' %}" class="btn btn-light btn-lg mt-3">
         Browse Products
     </a>
-    <a href="{% url 'product_list' %}">Products</a>
+    <a href="{% url 'products:product_list' %}">Products</a>
 
 </div>
 
@@ -37,9 +37,9 @@
                     <p class="card-text text-muted">
                         {{ product.vendor.username }}  
                     </p>
-                    <p class="fw-bold">Price: ${{ product.price }}</p>
+                    <p class="fw-bold">Price: {{ product.price|floatformat:2 }} RWF</p>
 
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary w-100">
+                    <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary w-100">
                         View Details
                     </a>
                 </div>
