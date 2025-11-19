@@ -1,4 +1,26 @@
-venv
-db.sqlite3.*
-.venv
-.idea
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+venv/
+.venv/
+.env
+.env.*
+
+# SQLite
+db.sqlite3
+
+# Django
+staticfiles/
+media/
+
+# IDEs
+.vscode/
+.idea/
+
+# Others
+*.log
+.DS_Store
