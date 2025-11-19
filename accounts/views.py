@@ -17,7 +17,7 @@ def welcome(request):
 def logout(request):
     return render(request, 'base.html')
 
-def login(request):
+def login_view(request):
     if request.method == 'POST':
         form ={'email':request.POST['email'],'password':request.POST['password']}
         if form:
@@ -26,6 +26,7 @@ def login(request):
             user = authenticate(request, username=email, password=password)
             
             if user is not None:
+                login(request, user)
                 return redirect('welcome')  
             else:
                 message="Invalid email or password. Please try again."
