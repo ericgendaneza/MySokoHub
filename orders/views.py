@@ -113,7 +113,16 @@ def confirmation(request, order_id):
         return redirect('orders:my_orders')
 
     items = OrderItem.objects.filter(order=order)
-    return render(request, 'confirmation.html', {'order': order, 'items': items})
+    # Determine viewer role for template message
+    if user_is_customer:
+        viewer_role = 'customer'
+    elif user_is_vendor and vendor_has_item:
+        viewer_role = 'vendor'
+    elif user_is_staff:
+        viewer_role = 'staff'
+    else:
+        viewer_role = 'other'
+    return render(request, 'confirmation.html', {'order': order, 'items': items, 'viewer_role': viewer_role})
 
 @login_required
 def my_orders(request):
@@ -125,20 +134,14 @@ def my_orders(request):
 
     return render(request, 'my_orders.html', {"orders": orders})
 
-#TASK 5.3
-@login_required
+
+#TASK 5.4
+from accounts.decorators import vendor_required
+@vendor_required
 def vendor_orders(request):
-    if request.user.user_type != "vendor":
-        messages.error(request, "Only vendors can view this page.")
-        return redirect('products:product_list')
-
-    # Get all order items where the product belongs to the logged-in vendor
-    vendor_items = OrderItem.objects.filter(product__vendor=request.user)
-
-    # Extract the orders
-    orders = {item.order for item in vendor_items}
-
-    return render(request, 'vendor_orders.html', {"orders": orders})
+    # Get all order items for this vendor's products, newest first
+    vendor_items = OrderItem.objects.filter(product__vendor=request.user).select_related('order', 'product', 'order__customer').order_by('-order__created_at')
+    return render(request, 'vendor_orders.html', {"items": vendor_items})
 
 # TASK 5.4
 @login_required

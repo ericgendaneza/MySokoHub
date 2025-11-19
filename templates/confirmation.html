@@ -2,8 +2,19 @@
 {% extends "base.html" %}
 {% block content %}
 <div style="max-width:700px; margin:30px auto; background:#efe0d4; border-radius:12px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,0.06);">
-  <h2 style="color:#5d4037; text-align:center;">Thank you — order placed!</h2>
-  <p style="text-align:center; color:#6d4c41;">Order #<strong>{{ order.id }}</strong></p>
+  {% if viewer_role == 'customer' %}
+    <h2 style="color:#5d4037; text-align:center;">Thank you — order placed!</h2>
+    <p style="text-align:center; color:#6d4c41;">Order #<strong>{{ order.id }}</strong></p>
+  {% elif viewer_role == 'vendor' %}
+    <h2 style="color:#5d4037; text-align:center;">Order details for your product(s)</h2>
+    <p style="text-align:center; color:#6d4c41;">Order #<strong>{{ order.id }}</strong></p>
+  {% elif viewer_role == 'staff' %}
+    <h2 style="color:#5d4037; text-align:center;">Order details (admin view)</h2>
+    <p style="text-align:center; color:#6d4c41;">Order #<strong>{{ order.id }}</strong></p>
+  {% else %}
+    <h2 style="color:#5d4037; text-align:center;">Order details</h2>
+    <p style="text-align:center; color:#6d4c41;">Order #<strong>{{ order.id }}</strong></p>
+  {% endif %}
 
   <div style="margin-top:12px;">
     <h4 style="color:#4e342e;">Order details</h4>
