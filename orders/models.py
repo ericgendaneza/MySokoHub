@@ -1,22 +1,35 @@
 from django.db import models
-from accounts.models import CustomUser
-from products.models import Product
+from django.conf import settings
+from django.core.validators import MinValueValidator
+
 
 class Order(models.Model):
-    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    total = models.IntegerField()
-    status = models.TextField()
+    STATUS_PENDING = 'pending'
+    STATUS_COMPLETED = 'completed'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_COMPLETED, 'Completed'),
+    ]
+
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
+    total = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
     delivery_address = models.TextField()
-    phone = models.TextField(max_length=14)
-    created_at = models.DateTimeField(auto_now=True)
+    phone = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
-        return (f"Customer: {self.customer}\ntotal:{self.total}\nstatus:{self.status}\ndelivery_adress:{self.delivery_adress}\nphone:{self.phone}\ncreated_at:{self.created_at}")
+        return f"Order #{self.id} - {self.customer.username} - {self.total} ({self.get_status_display()})"
+
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    price = models.IntegerField()
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"

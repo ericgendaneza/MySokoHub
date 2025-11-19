@@ -1,0 +1,31 @@
+/* Custom SokoHub styles */
+:root{
+  --brand:#0d6efd;
+  --muted:#6c757d;
+}
+body{background:#f7f8fa;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+
+.navbar-brand{font-size:1.25rem}
+.navbar .nav-link{color:#333}
+.navbar .nav-link.active{color:var(--brand);font-weight:600}
+
+.card{border:0;border-radius:.6rem}
+.card .card-img-top{border-top-left-radius:.6rem;border-top-right-radius:.6rem}
+
+.btn-primary{background:var(--brand);border-color:var(--brand)}
+
+/* header hero helpers */
+.hero{padding:3rem 0}
+.hero .lead{font-size:1.1rem;color:var(--muted)}
+
+/* Small utilities */
+.small-muted{color:var(--muted)}
+
+/* Product card placeholder */
+.img-placeholder{background:#e9ecef;display:flex;align-items:center;justify-content:center;height:200px;border-radius:.5rem}
+
+/* Forms */
+.form-control:focus{box-shadow:0 0 0 .15rem rgba(13,110,253,.08)}
+
+/* Footer */
+footer{color:#6c757d}

@@ -5,6 +5,8 @@ from .forms import ProductForm
 from accounts.decorators import vendor_required
 from django.core.paginator import Paginator 
 from django.shortcuts import render, get_object_or_404
+from orders.models import OrderItem
+from django.db.models import Sum, Q, Count
 
 
 
@@ -52,7 +54,7 @@ def add_product(request):
             product.status = 'active'
             product.save()
             messages.success(request, 'Product added successfully!')
-            return redirect('vendor_dashboard')
+            return redirect('products:vendor_dashboard')
     else:
         form = ProductForm()
     return render(request, 'products/add_product.html', {'form': form})
@@ -67,3 +69,59 @@ def product_detail(request, pk):
         'quantity_range': quantity_range,
     }
     return render(request, 'products/product_detail.html', context)
+
+
+@vendor_required
+def vendor_dashboard(request):
+    vendor = request.user
+    total_products = Product.objects.filter(vendor=vendor).count()
+    active_products = Product.objects.filter(vendor=vendor, status='active').count()
+    out_of_stock = Product.objects.filter(vendor=vendor, stock=0).count()
+
+    # Count order items related to this vendor's products
+    pending_order_items = OrderItem.objects.filter(product__vendor=vendor, order__status='pending').count()
+
+    recent_products = Product.objects.filter(vendor=vendor).order_by('-created_at')[:5]
+
+    context = {
+        'total_products': total_products,
+        'active_products': active_products,
+        'out_of_stock': out_of_stock,
+        'pending_order_items': pending_order_items,
+        'recent_products': recent_products,
+    }
+    return render(request, 'products/vendor_dashboard.html', context)
+
+
+@vendor_required
+def vendor_products(request):
+    vendor = request.user
+    products = Product.objects.filter(vendor=vendor).order_by('-created_at')
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'products/vendor_products.html', {'page_obj': page_obj})
+
+
+@vendor_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk, vendor=request.user)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product updated successfully.')
+            return redirect('products:vendor_products')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'products/edit_product.html', {'form': form, 'product': product})
+
+
+@vendor_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk, vendor=request.user)
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Product deleted successfully.')
+        return redirect('products:vendor_products')
+    return render(request, 'products/confirm_delete.html', {'product': product})
