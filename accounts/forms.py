@@ -8,10 +8,10 @@ USER_TYPE_CHOICES = (
 )
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={
+    username = forms.CharField(max_length=18, widget=forms.TextInput(attrs={
         'class': 'form-control', 'placeholder': 'username'
     }))
-    email = forms.EmailField(max_length=254, widget=forms.EmailInput(attrs={
+    email = forms.EmailField(max_length=25, widget=forms.EmailInput(attrs={
         'class': 'form-control', 'placeholder': 'you@example.com'
     }))
     password = forms.CharField(widget=forms.PasswordInput(attrs={
