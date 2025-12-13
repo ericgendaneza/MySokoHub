@@ -1,4 +1,4 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Products — SokoHub{% endblock %}
@@ -19,11 +19,20 @@
 
     <div class="d-flex gap-2 align-items-center">
         <label class="me-2 mb-0 small-muted">Sort</label>
-        <select id="sort-select" class="form-select form-select-sm" onchange="window.location.href = this.value;">
-            <option value="?sort=-created_at" {% if sort_by == '-created_at' %}selected{% endif %}>Newest</option>
-            <option value="?sort=price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low &uarr;</option>
-            <option value="?sort=price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High &darr;</option>
+        {% comment %}
+        <<select id="sort-select" class="form-select form-select-sm" onchange="window.location.href = this.value;">
+            <option value="?sort=-created_at" 
+            {% if sort_by=='-created_at' %}selected{% endif %}
+            >Newest</option>
+            <option value="?sort=price_asc" 
+            {% if sort_by=='price_asc' %}
+            selected{% endif %}>Price: Low &uarr;</option>
+            <option value="?sort=price_desc" 
+            {% if sort_by=='price_desc' %}
+            selected{% endif %}>Price: High &darr;
+            </option> 
         </select>
+        {% endcomment %}
     </div>
 </div>
 
@@ -33,9 +42,10 @@
         <div class="card h-100">
             <a href="{% url 'products:product_detail' product.id %}" class="text-decoration-none text-reset">
                 {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height:200px;object-fit:cover;">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                    style="height:200px;object-fit:cover;">
                 {% else %}
-                    <div class="img-placeholder">No Image</div>
+                <div class="img-placeholder">No Image</div>
                 {% endif %}
             </a>
 
@@ -50,18 +60,23 @@
                         </div>
                         <div>
                             {% if product.stock > 0 %}
-                                <span class="badge bg-success">In stock</span>
+                            <span class="badge bg-success">In stock</span>
                             {% else %}
-                                <span class="badge bg-danger">Out of stock</span>
+                            <span class="badge bg-danger">Out of stock</span>
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="d-grid">
                         {% if product.stock > 0 %}
-                            <a href="{% url 'products:product_detail' product.id %}" class="btn btn-sm btn-primary">View Details</a>
+                        <a href="{% url 'products:product_detail' product.id %}" class="btn btn-sm btn-primary">View
+                            Details</a>
+                        <form action="{% url 'products:add_to_cart' product.id %}" method="post" class="mt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm w-100">Add to Cart</button>
+                        </form>
                         {% else %}
-                            <button class="btn btn-sm btn-secondary" disabled>Unavailable</button>
+                        <button class="btn btn-sm btn-secondary" disabled>Unavailable</button>
                         {% endif %}
                     </div>
                 </div>
@@ -79,23 +94,25 @@
 <nav aria-label="Page navigation" class="mt-4">
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&sort={{ sort_by }}">Previous</a></li>
+        <li class="page-item"><a class="page-link"
+                href="?page={{ page_obj.previous_page_number }}&sort={{ sort_by }}">Previous</a></li>
         {% else %}
-            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
         {% endif %}
 
         {% for i in page_obj.paginator.page_range %}
-            {% if page_obj.number == i %}
-                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-            {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}&sort={{ sort_by }}">{{ i }}</a></li>
-            {% endif %}
+        {% if page_obj.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}&sort={{ sort_by }}">{{ i }}</a></li>
+        {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&sort={{ sort_by }}">Next</a></li>
+        <li class="page-item"><a class="page-link"
+                href="?page={{ page_obj.next_page_number }}&sort={{ sort_by }}">Next</a></li>
         {% else %}
-            <li class="page-item disabled"><span class="page-link">Next</span></li>
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
         {% endif %}
     </ul>
 </nav>

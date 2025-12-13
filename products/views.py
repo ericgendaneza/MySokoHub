@@ -1,5 +1,5 @@
 from django.shortcuts import render , redirect
-from .models import Product 
+from .models import Product, Cart
 from django.contrib import messages
 from .forms import ProductForm
 from accounts.decorators import vendor_required
@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from orders.models import OrderItem
 from django.db.models import Sum, Q, Count
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -125,3 +126,56 @@ def delete_product(request, pk):
         messages.success(request, 'Product deleted successfully.')
         return redirect('products:vendor_products')
     return render(request, 'products/confirm_delete.html', {'product': product})
+
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id, status='active')
+    quantity = int(request.POST.get('quantity', 1))
+    if quantity < 1:
+        messages.error(request, 'Invalid quantity selected.')
+        return redirect('products:product_detail', pk=product_id)
+
+    cart_item, created = Cart.objects.get_or_create(user=request.user, product=product)
+    if not created:
+        cart_item.quantity += quantity
+    else:
+        cart_item.quantity = quantity
+    cart_item.save()
+    messages.success(request, f'Added {quantity} of {product.name} to your cart.')
+    return redirect('products:product_detail', pk=product_id)
+
+@login_required
+def view_cart(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+    return render(request, 'cart.html', context)
+
+
+@login_required
+def remove_from_cart(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, id=cart_item_id, user=request.user)
+    cart_item.delete()
+    messages.success(request, 'Item removed from cart.')
+    return redirect('products:view_cart')
+
+@login_required
+def checkout(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items.exists():
+        messages.error(request, 'Your cart is empty.')
+        return redirect('products:view_cart')
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    if request.method == 'POST':
+        # Here you would typically create an Order and OrderItems
+        cart_items.delete()
+        messages.success(request, 'Checkout successful! Your order has been placed.')
+        return redirect('SokoHub:home_page')
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+    return render(request, 'checkout.html', context)   

@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -23,15 +26,16 @@
 
         {% for product in products %}
         <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100  shadow-sm">
 
                 <!-- Product Image -->
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="Product image">
-                {% else %}
-                    <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Placeholder">
-                {% endif %}
-
+                 <a href="{% url 'products:product_detail' product.id %}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="Product image" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Placeholder" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                 </a>
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text text-muted">
@@ -39,9 +43,15 @@
                     </p>
                     <p class="fw-bold">Price: {{ product.price|floatformat:2 }} RWF</p>
 
-                    <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary w-100">
+                    <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary-ll btn-sm w-100">
                         View Details
                     </a>
+
+                    {% comment %} Add to cart button{% endcomment %}
+                    <form action="{% url 'products:add_to_cart' product.id %}" method="post" class="mt-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm w-100">Add to Cart</button>
+                    </form>
                 </div>
 
             </div>

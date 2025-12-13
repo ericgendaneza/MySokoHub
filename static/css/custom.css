@@ -1,0 +1,18 @@
+/*
+ * Custom CSS to override Bootstrap's primary color
+ */
+
+:root {
+    --bs-primary: #a67c00;
+    --bs-primary-rgb: 166, 124, 0;
+}
+
+.btn-primary-ll {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #a67c00;
+    --bs-btn-border-color: #a67c00;
+    --bs-btn-hover-bg: #c08c00; /* A slightly lighter shade for hover */
+    --bs-btn-hover-border-color: #c08c00;
+    --bs-btn-active-bg: #8c7400; /* A slightly darker shade for active */
+    --bs-btn-active-border-color: #8c7400;
+}
