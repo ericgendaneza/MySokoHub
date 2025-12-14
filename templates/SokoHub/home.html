@@ -30,11 +30,7 @@
 
                 <!-- Product Image -->
                  <a href="{% url 'products:product_detail' product.id %}">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="Product image" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Placeholder" style="height: 200px; object-fit: cover;">
-                    {% endif %}
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="Product image" style="height: 200px; object-fit: cover;">
                  </a>
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>

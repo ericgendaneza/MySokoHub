@@ -17,12 +17,19 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(0)])
     stock = models.PositiveIntegerField(default=0)
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image = models.ImageField(upload_to='products/', blank=True, null=True, default='products/placeholder.png')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
+
+    @property
+    def image_url(self):
+        if self.image and self.image.name:
+            return self.image.url
+        else:
+            return '/media/products/placeholder.png'
 
     def __str__(self):
         return f"{self.name} - {self.vendor.username}"
