@@ -32,7 +32,7 @@
             <hr>
 
             <p class="fs-2 fw-bold text-success mb-2">
-                {{ product.price|floatformat:2 }} RWF
+                {{ product.price|floatformat:2 }} RWF <small class="text-muted">/ {{ product.unit }}</small>
             </p>
 
             <p class="text-muted mb-4">
@@ -69,6 +69,7 @@
                         </div>
                         <div class="col-12">
                                     <button type="submit" class="btn btn-lg btn-primary w-100" {% if product.stock == 0 %}disabled{% endif %}>Buy Now</button>
+                                    <button type="submit" formaction="{% url 'orders:add_to_cart' product.id %}" class="btn btn-outline-view w-100 mt-2" {% if product.stock == 0 %}disabled{% endif %}>Add to Cart</button>
                         </div>
                     </div>
                 </form>

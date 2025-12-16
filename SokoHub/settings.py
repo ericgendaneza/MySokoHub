@@ -132,3 +132,27 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Development email backend: prints emails to console so password reset can be tested locally
+import os
+
+# Email configuration
+# If EMAIL_HOST is set in the environment, use SMTP settings from environment variables.
+# Otherwise, when DEBUG=True we fall back to the console backend for easy local testing.
+if os.environ.get('EMAIL_HOST'):
+    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
+    EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+else:
+    # Development: use console backend when debugging
+    if DEBUG:
+        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+        DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+    else:
+        # In production we expect EMAIL_HOST to be set; if not, fall back to SMTP backend
+        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -31,6 +31,10 @@
                     {% endif %}
                 </div>
 
+                <div class="mb-2 text-end">
+                    <a href="{% url 'accounts:password_reset' %}" class="small" data-bs-toggle="modal" data-bs-target="#passwordResetModal">Forgot password?</a>
+                </div>
+
                 <div class="d-grid">
                     <button class="btn btn-primary" type="submit">Log In</button>
                 </div>

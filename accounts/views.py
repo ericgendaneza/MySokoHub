@@ -78,5 +78,29 @@ def register_view(request):
     return render(request, 'registration.html', {'form': form})
 
 
+@login_required
+def profile_view(request):
+    from .forms import ProfileForm
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            u = request.user
+            u.username = form.cleaned_data['username']
+            u.email = form.cleaned_data['email']
+            u.phone = form.cleaned_data.get('phone', '')
+            u.location = form.cleaned_data.get('location', '')
+            u.save()
+            messages.success(request, 'Profile updated.')
+            return redirect('accounts:profile')
+    else:
+        form = ProfileForm(initial={
+            'username': request.user.username,
+            'email': request.user.email,
+            'phone': getattr(request.user, 'phone', ''),
+            'location': getattr(request.user, 'location', ''),
+        })
+    return render(request, 'profile.html', {'form': form})
+
+
 
 

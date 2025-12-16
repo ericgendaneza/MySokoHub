@@ -19,10 +19,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import home
+from accounts import views as accounts_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    # Top-level auth routes (kept for backward compatibility with templates using un-namespaced names)
+    path('login/', accounts_views.login_view, name='login'),
+    path('logout/', accounts_views.logout_view, name='logout'),
+    path('register/', accounts_views.register_view, name='register'),
     path('orders/', include('orders.urls')),
     path('', home, name='home_page'),
     path('products/', include(('products.urls', 'products'), namespace='products')),

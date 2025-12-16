@@ -21,6 +21,9 @@ def product_list(request):
     products = Product.objects.filter(status='active')
 
 
+    # Search query
+    q = request.GET.get('q', '').strip()
+
     sort_by = request.GET.get('sort', '-created_at') 
     
     if sort_by == 'price_asc':
@@ -30,7 +33,14 @@ def product_list(request):
     else: 
         order_by_field = '-created_at' 
         
+    # Apply ordering
     products = products.order_by(order_by_field)
+
+    # Apply search filter if provided
+    if q:
+        products = products.filter(
+            Q(name__icontains=q) | Q(description__icontains=q) | Q(vendor__username__icontains=q)
+        )
 
     # 
     paginator = Paginator(products, 12) 
@@ -38,8 +48,9 @@ def product_list(request):
     page_obj = paginator.get_page(page_number)
     
     context = {
-        'page_obj': page_obj,  
-        'sort_by': sort_by     
+        'page_obj': page_obj,
+        'sort_by': sort_by,
+        'q': q,
     }
     
     return render(request, 'products/product_list.html', context)

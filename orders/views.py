@@ -159,6 +159,140 @@ def vendor_order_details(request, order_id):
         "order": order,
         "items": items
     })
+
+
+def add_to_cart(request, product_id):
+    # Add product to session cart
+    product = get_object_or_404(Product, id=product_id, status='active')
+    if request.method == 'POST':
+        try:
+            qty = int(request.POST.get('quantity', 1))
+        except (TypeError, ValueError):
+            qty = 1
+
+        if qty < 1:
+            messages.error(request, 'Invalid quantity.')
+            return redirect('products:product_detail', pk=product.id)
+
+        if qty > product.stock:
+            messages.error(request, 'Not enough stock available.')
+            return redirect('products:product_detail', pk=product.id)
+
+        cart = request.session.get('cart', {})
+        key = str(product.id)
+        cart[key] = cart.get(key, 0) + qty
+        # Ensure we don't exceed stock
+        if cart[key] > product.stock:
+            cart[key] = product.stock
+
+        request.session['cart'] = cart
+        messages.success(request, f'Added {qty} x {product.name} to cart.')
+
+    return redirect('orders:cart_view')
+
+
+def cart_view(request):
+    cart = request.session.get('cart', {})
+    items = []
+    total = 0
+    for pid, qty in list(cart.items()):
+        try:
+            product = Product.objects.get(id=pid, status='active')
+        except Product.DoesNotExist:
+            # remove missing products from cart
+            cart.pop(pid, None)
+            continue
+        qty = int(qty)
+        subtotal = product.price * qty
+        total += subtotal
+        items.append({'product': product, 'quantity': qty, 'subtotal': subtotal})
+
+    request.session['cart'] = cart
+    return render(request, 'cart.html', {'items': items, 'total': total})
+
+
+def update_cart(request):
+    if request.method == 'POST':
+        cart = request.session.get('cart', {})
+        for key, value in request.POST.items():
+            if key.startswith('qty_'):
+                pid = key.split('_', 1)[1]
+                try:
+                    qty = int(value)
+                except (TypeError, ValueError):
+                    qty = 0
+                if qty <= 0:
+                    cart.pop(pid, None)
+                else:
+                    # clamp to stock
+                    product = Product.objects.filter(id=pid).first()
+                    if product:
+                        cart[pid] = min(qty, product.stock)
+        request.session['cart'] = cart
+        messages.success(request, 'Cart updated.')
+    return redirect('orders:cart_view')
+
+
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart', {})
+    cart.pop(str(product_id), None)
+    request.session['cart'] = cart
+    messages.success(request, 'Item removed from cart.')
+    return redirect('orders:cart_view')
+
+
+@login_required
+def checkout_cart(request):
+    # Only customers allowed
+    if getattr(request.user, 'user_type', None) != 'customer':
+        messages.error(request, 'Only customers can place orders.')
+        return redirect('products:product_list')
+
+    cart = request.session.get('cart', {})
+    if not cart:
+        messages.error(request, 'Your cart is empty.')
+        return redirect('products:product_list')
+
+    # Build items and check stock
+    items_data = []
+    total = 0
+    for pid, qty in cart.items():
+        product = Product.objects.filter(id=pid, status='active').first()
+        if not product:
+            messages.error(request, 'One of the products in your cart is unavailable.')
+            return redirect('orders:cart_view')
+        qty = int(qty)
+        if qty > product.stock:
+            messages.error(request, f'Not enough stock for {product.name}.')
+            return redirect('orders:cart_view')
+        subtotal = product.price * qty
+        total += subtotal
+        items_data.append({'product': product, 'quantity': qty, 'price': product.price})
+
+    # Create order
+    order = Order.objects.create(
+        customer=request.user,
+        total=total,
+        status='pending',
+        delivery_address=request.user.location or '',
+        phone=request.user.phone or ''
+    )
+
+    for it in items_data:
+        OrderItem.objects.create(
+            order=order,
+            product=it['product'],
+            quantity=it['quantity'],
+            price=it['price']
+        )
+        # decrement stock
+        it['product'].stock = it['product'].stock - it['quantity']
+        it['product'].save()
+
+    # Clear cart
+    request.session['cart'] = {}
+    messages.success(request, 'Order placed successfully.')
+    return redirect('orders:confirmation', order_id=order.id)
     
 
 

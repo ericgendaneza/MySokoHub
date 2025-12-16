@@ -58,3 +58,14 @@ class LoginForm(forms.Form):
             'placeholder': 'Password'
         })
     )
+
+
+class ProfileForm(forms.Form):
+    username = forms.CharField(max_length=18, widget=forms.TextInput(attrs={
+        'class': 'form-control', 'placeholder': 'username'
+    }))
+    email = forms.EmailField(max_length=254, widget=forms.EmailInput(attrs={
+        'class': 'form-control', 'placeholder': 'you@example.com'
+    }))
+    phone = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    location = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))

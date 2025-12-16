@@ -14,7 +14,7 @@
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <div>
         <strong class="h5">All Products</strong>
-        <p class="small text-muted mb-0">Showing newest items first</p>
+        <p class="small text-muted mb-0">Showing newest items first{% if q %} — results for "{{ q }}"{% endif %}</p>
     </div>
 
     <div class="d-flex gap-2 align-items-center">
@@ -47,6 +47,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <span class="fw-bold">{{ product.price|floatformat:2 }} RWF</span>
+                            <small class="text-muted">/ {{ product.unit }}</small>
                         </div>
                         <div>
                             {% if product.stock > 0 %}
@@ -59,7 +60,7 @@
 
                     <div class="d-grid">
                         {% if product.stock > 0 %}
-                            <a href="{% url 'products:product_detail' product.id %}" class="btn btn-sm btn-primary">View Details</a>
+                            <a href="{% url 'products:product_detail' product.id %}" class="btn btn-sm btn-view">View Details</a>
                         {% else %}
                             <button class="btn btn-sm btn-secondary" disabled>Unavailable</button>
                         {% endif %}
