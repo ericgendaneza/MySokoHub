@@ -41,20 +41,22 @@
         </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
         {% for product in recent_products %}
         <div class="col">
-            <div class="card h-100">
+            <div class="card product-card h-100">
                 {% if product.image %}
-                <img src="{{ product.image.url }}" class="card-img-top" style="height:180px;object-fit:cover;" />
+                <img src="{{ product.image.url }}" class="card-img-top card-img-cover" />
                 {% else %}
-                <div class="bg-light d-flex align-items-center justify-content-center" style="height:180px;">No Image</div>
+                <div class="bg-light d-flex align-items-center justify-content-center card-img-cover">No Image</div>
                 {% endif %}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="text-muted mb-2">{{ product.price|floatformat:2 }} RWF</p>
+                    <p class="text-muted mb-2">{{ product.price|floatformat:2 }} RWF <small class="text-muted">/ {{ product.unit }}</small></p>
                     <p class="mb-2">Stock: <strong{% if product.stock == 0 %} class="text-danger"{% endif %}>{{ product.stock }}</strong></p>
-                    <a href="{% url 'products:product_detail' product.id %}" class="btn btn-sm btn-outline-primary mt-auto">View</a>
+                    <div class="mt-auto">
+                        <a href="{% url 'products:product_detail' product.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                    </div>
                 </div>
             </div>
         </div>

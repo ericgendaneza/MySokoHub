@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
+import random
+from .models import CustomUser
 
 User = get_user_model()
 
@@ -76,6 +78,26 @@ def register_view(request):
     else:
         form = RegistrationForm()
     return render(request, 'registration.html', {'form': form})
+
+def send_email(to, subject, body):
+    from .utils import send_smtp_email
+    send_smtp_email(to, subject, body, from_email='webmaster@localhost')
+
+def reset_password(request):
+    if request.method != 'POST':
+        return redirect('accounts:password_reset')
+    email = request.POST.get('email')
+    if not email:
+        messages.error(request, 'Email is required for password reset')
+        return redirect('accounts:password_reset')
+    user = CustomUser.objects.filter(email=email).first()
+    if user:
+        otp = random.randint(100000, 999999)
+        messages.success(request, 'If an account with that email exists, you will receive reset instructions.')
+    else:
+        messages.success(request, 'If an account with that email exists, you will receive reset instructions.')
+    return redirect('accounts:password_reset')
+        
 
 
 @login_required

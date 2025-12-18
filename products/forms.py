@@ -10,7 +10,7 @@ class ProductForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 4, 'class': 'form-control', 'placeholder': 'Short description'}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00', 'step': '0.01'}),
             'stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity'}),
-            'unit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'pcs'}),
+            'unit': forms.Select(attrs={'class': 'form-select'}, choices=Product.UNIT_CHOICES),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 

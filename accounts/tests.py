@@ -50,6 +50,19 @@ class PasswordResetTests(TestCase):
         login_ok = self.client.login(username=self.user.username, password='newStrongPass1')
         self.assertTrue(login_ok)
 
+    def test_password_reset_uses_smtp_sender_when_smtp_backend_configured(self):
+        # Ensure our custom SMTP sender is used when EMAIL_BACKEND is smtp
+        from unittest.mock import patch
+        from django.test import override_settings
+
+        with override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'):
+            with patch('accounts.forms.send_smtp_email') as mock_send:
+                resp = self.client.post(reverse('accounts:password_reset'), {'email': self.user.email})
+                # should redirect
+                self.assertEqual(resp.status_code, 302)
+                # our SMTP sender should have been called at least once
+                self.assertTrue(mock_send.called)
+
 
 class ProfileAndPasswordChangeTests(TestCase):
     def setUp(self):

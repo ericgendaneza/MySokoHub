@@ -33,6 +33,14 @@
                             {% for e in form.stock.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Unit (e.g., pcs, kg)</label>
+                            {{ form.unit }}
+                            {% for e in form.unit.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Image</label>
                         {{ form.image }}

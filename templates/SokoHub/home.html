@@ -4,14 +4,12 @@
 {% block content %}
 
 <!-- HERO SECTION -->
-<div class="bg-primary text-white p-5 text-center">
+<div class="heros bg-secondary opacity-75 text-white p-5 text-center">
     <h1 class="display-4 fw-bold">Welcome to SokoHub</h1>
-    <p class="lead">Your marketplace for local vendors and amazing products</p>
-
-    <a href="{% url 'products:product_list' %}" class="btn btn-light btn-lg mt-3">
+    <p style="font-weight: 900;" class="lead text-white  mb-4">Your marketplace for local vendors and amazing products</p>
+    <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg mt-3">
         Browse Products
     </a>
-    <a href="{% url 'products:product_list' %}">Products</a>
 
 </div>
 
