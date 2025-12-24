@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-*iq*@(q!x(8078)y-&1e2+(s=-o&y+^(*k4*82l8r^9xcjl3qi
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'sokohub-8yi7.onrender.com']
 
 
 # Application definition
