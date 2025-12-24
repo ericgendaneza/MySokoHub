@@ -1,1 +1,1 @@
-web: gunicorn sokohub.wsgi --log-file -
+web: gunicorn SokoHub.wsgi --log-file -
