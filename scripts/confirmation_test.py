@@ -16,7 +16,6 @@ User = get_user_model()
 username = 'test_customer'
 password = 'testpass123'
 
-# Ensure user exists
 user = User.objects.filter(username=username).first()
 if not user:
     print('Test user not found; create by running checkout_test first')
@@ -25,7 +24,6 @@ if not user:
 client = Client()
 client.login(username=username, password=password)
 
-# Try to GET confirmation for id 3
 url = '/orders/confirmation/3/'
 resp = client.get(url, follow=True, HTTP_HOST='127.0.0.1')
 print('GET', url, '=> status', resp.status_code)

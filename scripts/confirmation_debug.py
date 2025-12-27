@@ -27,7 +27,6 @@ print('\n=== Anonymous request ===')
 resp = client.get(url, follow=True, HTTP_HOST='127.0.0.1')
 print_result(resp)
 
-# Ensure test_customer exists and login
 username = 'test_customer'
 password = 'testpass123'
 user = User.objects.filter(username=username).first()
@@ -38,7 +37,6 @@ if user:
     print_result(resp)
     client.logout()
 
-# Create/ensure another user
 other_username = 'other_user'
 other = User.objects.filter(username=other_username).first()
 if not other:

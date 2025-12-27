@@ -12,13 +12,11 @@ from django.contrib.auth.hashers import make_password
 
 User = get_user_model()
 
-# Find a vendor user
 vendor = User.objects.filter(user_type='vendor').first()
 if not vendor:
     print('No vendor user found. Create one with createsuperuser or add a vendor user first.')
     sys.exit(1)
 
-# Ensure known password for test
 vendor.set_password('vendorpass')
 vendor.save()
 

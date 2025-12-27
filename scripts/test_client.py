@@ -2,7 +2,6 @@ import os
 import django
 import sys
 
-# Ensure project root is on sys.path so the `SokoHub` package can be imported
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -22,7 +21,6 @@ paths = ['/accounts/', '/orders/my-orders/', '/products/add/', '/']
 for p in paths:
     print('\nREQUEST ->', p)
     try:
-        # Provide HTTP_HOST to avoid DisallowedHost when test client uses 'testserver'
         resp = client.get(p, follow=True, HTTP_HOST='127.0.0.1')
     except Exception as e:
         print('Request raised exception:', type(e).__name__, e)
@@ -30,7 +28,6 @@ for p in paths:
     print('Status code:', resp.status_code)
     if resp.redirect_chain:
         print('Redirect chain:', resp.redirect_chain)
-    # Print a short excerpt of the response content for debugging
     content = resp.content.decode('utf-8', errors='replace')
     excerpt = content[:1500]
     print('Response content excerpt:\n')

@@ -25,7 +25,6 @@ def login_view(request):
         identifier = form.cleaned_data['email']
         password = form.cleaned_data['password']
 
-        # allow login via username or email
         try:
             user_obj = User.objects.filter(email__iexact=identifier).first()
             username = user_obj.username if user_obj else identifier
@@ -35,7 +34,6 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            # redirect based on role
             if getattr(user, 'user_type', '') == 'vendor':
                 return redirect('products:product_list')
             else:
@@ -67,7 +65,6 @@ def register_view(request):
                 user.location = location
                 user.save()
 
-                # auto-login and redirect based on role
                 auth_login(request, user)
                 if user.user_type == 'vendor':
                     return redirect('products:product_list')

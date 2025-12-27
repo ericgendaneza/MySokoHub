@@ -5,7 +5,6 @@ from django.template import loader
 from django.conf import settings
 from django.core.mail import send_mail as django_send_mail
 
-# For password reset override to use custom SMTP sender when configured
 from django.contrib.auth.forms import PasswordResetForm
 from .utils import send_smtp_email
 
@@ -86,24 +85,23 @@ class SMTPPasswordResetForm(PasswordResetForm):
     """
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):
-        # Render subject and body
+        
         subject = loader.render_to_string(subject_template_name, context)
-        # Email subject *must not* contain newlines
+    
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
         html_message = None
         if html_email_template_name:
             html_message = loader.render_to_string(html_email_template_name, context)
 
-        # If tests or local in-memory backend is used, delegate to Django's send_mail
         email_backend = getattr(settings, 'EMAIL_BACKEND', '') or ''
         if 'locmem' in email_backend or email_backend.startswith('django.core.mail.backends.locmem'):
             django_send_mail(subject, body, from_email, [to_email], html_message=html_message)
             return
 
-        # Otherwise, try the raw SMTP sender
+        
         try:
             send_smtp_email(to_email, subject, body, html_message=html_message, from_email=from_email)
         except Exception:
-            # Last resort: fall back to Django's send_mail so the flow still completes
+            
             django_send_mail(subject, body, from_email, [to_email], html_message=html_message)

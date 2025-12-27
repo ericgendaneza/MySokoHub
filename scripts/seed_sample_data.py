@@ -14,21 +14,18 @@ from products.models import Product
 
 User = get_user_model()
 
-# Create vendor user
 vendor, created = User.objects.get_or_create(username='vendor_sample', defaults={'email': 'vendor@example.com', 'user_type': 'vendor'})
 if created:
     vendor.set_password('vendorpass')
     vendor.save()
     print('Created vendor_sample / vendorpass')
 
-# Create customer user
 customer, created = User.objects.get_or_create(username='customer_sample', defaults={'email': 'customer@example.com', 'user_type': 'customer'})
 if created:
     customer.set_password('customerpass')
     customer.save()
     print('Created customer_sample / customerpass')
 
-# Create sample products for vendor
 prod1, p1c = Product.objects.get_or_create(name='Sample Product 1', defaults={'description': 'Auto-created product', 'price': 1500.00, 'stock': 20, 'vendor': vendor, 'status': 'active'})
 prod2, p2c = Product.objects.get_or_create(name='Sample Product 2', defaults={'description': 'Auto-created product', 'price': 750.00, 'stock': 10, 'vendor': vendor, 'status': 'active'})
 if p1c or p2c:
